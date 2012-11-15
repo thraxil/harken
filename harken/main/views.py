@@ -8,7 +8,6 @@ from pysolr import Solr, SolrError
 @render_to('main/index.html')
 def index(request, page=1):
     response_list = Response.objects.all()
-    print response_list.count()
     p = Paginator(response_list, 200)
     try:
         responses = p.page(page)
