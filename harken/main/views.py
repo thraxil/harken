@@ -2,6 +2,8 @@ from annoying.decorators import render_to
 from harken.main.models import Response, add_to_solr
 from django.http import HttpResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from pysolr import Solr, SolrError
+
 
 @render_to('main/index.html')
 def index(request, page=1):
@@ -34,3 +36,16 @@ def add(request):
 def response(request, id):
     r = Response.objects.get(id=id)
     return dict(response=r)
+
+def extract_response(result):
+    return Response.objects.get(id=result['id'].split(":")[1])
+    
+
+@render_to('main/search.html')
+def search(request):
+    query = request.GET.get('q', '')
+    if not query:
+        return dict(query=query)
+    conn = Solr('http://worker.thraxil.org:8080/solr/')
+    results = [extract_response(r) for r in conn.search(query)]
+    return dict(query=query, responses=results)

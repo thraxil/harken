@@ -37,6 +37,9 @@
 
         <p class="navbar-text pull-right">
           {% block topnavbarrightitems %}{% endblock %}
+					<form action="/search/" method="get" class="navbar-search">
+						<input type="text" name="q" placeholder="search" class="search-query"/>
+					</form>
 {% block usernav %}
           {% if request.user.is_anonymous %}
           <a href="/accounts/login/?next=/" class="btn btn-success">login</a>
@@ -55,46 +58,14 @@
   <div class="container" id="outer-container">
 {% block masthead %}
     <header class="subhead hidden-phone" id="masthead">
-      <h1><a href="./" title="harken">harken</a></h1>
-      <h4 id="logo-ccnmtl">
-        <a href="http://ccnmtl.columbia.edu" target="_blank"
-          title="Columbia Center for New Media Teaching and Learning">
-          <span>Produced by the Columbia Center for New Media Teaching
-          and Learning</span>
-        </a>
-      </h4>
     </header>
 
-{% block primarynav %}
-    <div class="navbar" id="primarynav">
-      <div class="navbar-inner">
-        <div class="container">
-          <ul class="nav">
-          {% block primarynavtabs %}
-            <li class="active"><a href="/one/">One</a></li>
-						<li><a href="/two/">Two</a></li>
-          {% endblock %}
-					{% block primarynavtabsextra %}{% endblock %}
-          </ul>
-
-          <ul class="nav pull-right">
-            {% block primarynavrightextra %}{% endblock %}
-						<li><a href="/three/">Three</a></li>
-						<li><a href="/four/">Four</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-{% endblock %}
 
 {% endblock %}
 
     <div class="container-fluid" id="content">
       <div class="row-fluid">
-        <div class="span2" id="sidebar">
-{% block sidebar %}{% endblock %}
-        </div>
-        <div class="span10" id="right-content">
+        <div class="span12" id="right-content">
 {% block pagetitle %}{% endblock %}
 {% block content %}{% endblock %}
         </div>
