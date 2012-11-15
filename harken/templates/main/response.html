@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load markup %}
+
+{% block content %}
+<h2>{{response.url}}</h2>
+<div><a href="{{response.get_absolute_url}}">{{response.visited}}</a>
+[<b>{{response.status}}</b>
+<i>{{response.content_type}}</i>]</div>
+
+
+{{response.as_markdown|markdown}}
+
+
+{% endblock %}

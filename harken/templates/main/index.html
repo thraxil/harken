@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<ul>
+{% for response in responses %}
+<li class="{% if response.substantial %}substantial{% else %}insubstantial{% endif %}"><a href="{{response.get_absolute_url}}">{{response.visited}}</a>
+[<b>{{response.status}}</b>
+<i>{{response.content_type}}</i>]
+{{response.url}}
+</li>
+{% endfor %}
+</ul>
+{% endblock %}

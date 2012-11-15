@@ -1,0 +1,35 @@
+from annoying.decorators import render_to
+from harken.main.models import Response
+from django.http import HttpResponse
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+
+@render_to('main/index.html')
+def index(request, page=1):
+    response_list = Response.objects.all()
+    print response_list.count()
+    p = Paginator(response_list, 200)
+    try:
+        responses = p.page(page)
+    except PageNotAnInteger:
+        responses = p.page(1)
+    except EmptyPage:
+        responses = p.page(p.num_pages)
+    return dict(responses=responses.object_list,
+                paginator=responses)
+
+def add(request):
+    if request.method == "POST":
+        r = Response.objects.create(
+            url=request.POST['url'][:200],
+            status=int(request.POST.get('status','200')),
+            content_type=request.POST.get('content_type', ''),
+            body=request.POST.get('body', ''),
+            )
+        return HttpResponse("OK")
+    return HttpResponse("POST only")
+
+
+@render_to('main/response.html')
+def response(request, id):
+    r = Response.objects.get(id=id)
+    return dict(response=r)

@@ -1,0 +1,4 @@
+*.pyc
+*~
+ve
+local_settings.py
