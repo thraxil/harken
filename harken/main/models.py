@@ -1,6 +1,16 @@
 from django.db import models
 from html2text import wrapwrite, html2text
+from pysolr import Solr, SolrError
 
+def add_to_solr(response):
+    conn = Solr('http://worker.thraxil.org:8080/solr/')
+    conn.add([
+            dict(
+                id="response:%d" % response.id,
+                name=response.url,
+                text=response.body,
+                )
+            ])
 
 class Response(models.Model):
     url = models.URLField()

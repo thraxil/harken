@@ -1,5 +1,5 @@
 from annoying.decorators import render_to
-from harken.main.models import Response
+from harken.main.models import Response, add_to_solr
 from django.http import HttpResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
@@ -25,6 +25,7 @@ def add(request):
             content_type=request.POST.get('content_type', ''),
             body=request.POST.get('body', ''),
             )
+        add_to_solr(r)
         return HttpResponse("OK")
     return HttpResponse("POST only")
 
