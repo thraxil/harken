@@ -26,6 +26,9 @@ class Response(models.Model):
     def get_absolute_url(self):
         return "/response/%d/" % self.id
 
+    def is_html(self):
+        return self.content_type.startswith("text/html")
+
     def as_markdown(self):
         try:
             return html2text(self.body,self.url)

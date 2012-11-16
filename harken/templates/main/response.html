@@ -7,8 +7,11 @@
 [<b>{{response.status}}</b>
 <i>{{response.content_type}}</i>]</div>
 
-
+{% if response.is_html %}
 {{response.as_markdown|markdown}}
+{% else %}
+<pre>{{response.body}}</pre>
+{% endif %}
 
 
 {% endblock %}
