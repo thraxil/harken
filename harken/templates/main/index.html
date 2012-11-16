@@ -8,8 +8,9 @@
 	<td>
 		<a href="{{response.get_absolute_url}}">{{response.visited}}</a>
 	</td>
+	<td>{{response.length|filesizeformat}}</td>
 	<td>
-		<span class="{% if response.substantial %}substantial{% else %}insubstantial{% endif %}">{{response.url|truncatechars:128}}</span>
+		<span class="{% if response.substantial %}substantial{% else %}insubstantial{% endif %}">{{response.url|truncatechars:100}}</span>
 	</td>
 </tr>
 {% endfor %}
