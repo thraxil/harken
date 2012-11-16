@@ -37,6 +37,12 @@ def response(request, id):
     r = Response.objects.get(id=id)
     return dict(response=r)
 
+
+def response_raw(request, id):
+    r = Response.objects.get(id=id)
+    return HttpResponse(r.body, content_type="text/plain")
+
+
 def extract_response(result):
     return Response.objects.get(id=result['id'].split(":")[1])
     

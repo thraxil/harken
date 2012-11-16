@@ -3,11 +3,13 @@
 
 {% block content %}
 <h2>{{response.url}}</h2>
-<div><a href="{{response.get_absolute_url}}">{{response.visited}}</a>
+<div>{{response.visited}}
 [<b>{{response.status}}</b>
 <i>{{response.content_type}}</i>]</div>
 
 {% if response.is_html %}
+<p><a href="raw/">Raw View</a></p>
+<hr />
 {{response.as_markdown|markdown}}
 {% else %}
 <pre>{{response.body}}</pre>
