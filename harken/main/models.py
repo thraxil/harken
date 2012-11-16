@@ -32,8 +32,8 @@ class Response(models.Model):
     def as_markdown(self):
         try:
             return html2text(self.body,self.url)
-        except:
-            return "[error converting HTML to Text]"
+        except Exception, e:
+            return "[error converting HTML to Text: %s]" % str(e)
 
     def substantial(self):
         return self.length > 1024
