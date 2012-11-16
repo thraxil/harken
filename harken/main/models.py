@@ -33,7 +33,7 @@ class Response(models.Model):
         try:
             return html2text(self.body,self.url)
         except:
-            return ""
+            return "[error converting HTML to Text]"
 
     def substantial(self):
         return self.length > 1024
