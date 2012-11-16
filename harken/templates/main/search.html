@@ -2,13 +2,18 @@
 
 {% block content %}
 <h2>Search Results: {{query}}</h2>
-<ul>
+
+<table class="table table-condensed table-bordered table-striped">
 {% for response in responses %}
-<li class="{% if response.substantial %}substantial{% else %}insubstantial{% endif %}"><a href="{{response.get_absolute_url}}">{{response.visited}}</a>
-[<b>{{response.status}}</b>
-<i>{{response.content_type}}</i>]
-{{response.url}}
-</li>
+<tr>
+	<td>
+		<a href="{{response.get_absolute_url}}">{{response.visited}}</a>
+	</td>
+	<td>
+		<span class="{% if response.substantial %}substantial{% else %}insubstantial{% endif %}">{{response.url|truncatechars:128}}</span>
+	</td>
+</tr>
 {% endfor %}
-</ul>
+</table>
+
 {% endblock %}
