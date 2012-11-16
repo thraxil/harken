@@ -25,6 +25,7 @@ def add(request):
             status=int(request.POST.get('status','200')),
             content_type=request.POST.get('content_type', ''),
             body=request.POST.get('body', ''),
+            length=len(request.POST.get('body', '')),
             )
         add_to_solr(r)
         return HttpResponse("OK")

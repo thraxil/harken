@@ -17,6 +17,7 @@ class Response(models.Model):
     status = models.IntegerField(default=200)
     content_type = models.CharField(max_length=256, blank=True, default="")
     body = models.TextField(blank=True, null=True, default="")
+    length = models.IntegerField(default=0)
     visited = models.DateTimeField(auto_now_add=True)
 
     class Meta:
