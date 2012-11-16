@@ -33,4 +33,4 @@ class Response(models.Model):
             return ""
 
     def substantial(self):
-        return len(self.body) > 1024
+        return self.length > 1024
