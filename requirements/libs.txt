@@ -16,3 +16,4 @@ requirements/src/rdflib-3.1.0.tar.gz
 requirements/src/selenium-2.20.0.tar.gz
 requirements/src/requests-0.13.3.tar.gz
 requirements/src/pysolr-2.0.15.tar.gz
+requirements/src/diff-match-patch-20120106.tar.gz

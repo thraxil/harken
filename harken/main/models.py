@@ -1,6 +1,7 @@
 from django.db import models
 from html2text import wrapwrite, html2text
 from pysolr import Solr, SolrError
+import diff_match_patch
 
 def add_to_solr(response):
     conn = Solr('http://worker.thraxil.org:8080/solr/')
@@ -17,11 +18,17 @@ class Url(models.Model):
     content = models.TextField(blank=True, null=True, default="")
     content_type = models.CharField(max_length=256, blank=True, default="")
 
+    def get_patch(self, content=""):
+        """ return a text patch of the supplied content against
+        existing content """
+        dmp = diff_match_patch.diff_match_patch()
+        return dmp.patch_toText(dmp.patch_make(self.content, content))
+
 
 class Response(models.Model):
     url = models.ForeignKey(Url)
     status = models.IntegerField(default=200)
-    body = models.TextField(blank=True, null=True, default="")
+    patch = models.TextField(blank=True, null=True, default="")
     length = models.IntegerField(default=0)
     visited = models.DateTimeField(auto_now_add=True)
 
