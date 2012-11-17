@@ -3,13 +3,13 @@ from html2text import wrapwrite, html2text
 from pysolr import Solr, SolrError
 import diff_match_patch
 
-def add_to_solr(response):
+def add_to_solr(response, body):
     conn = Solr('http://worker.thraxil.org:8080/solr/')
     conn.add([
             dict(
                 id="response:%d" % response.id,
                 name=response.url.url,
-                text=response.body,
+                text=body,
                 )
             ])
 
@@ -43,9 +43,13 @@ class Response(models.Model):
 
     def as_markdown(self):
         try:
-            return html2text(self.body,self.url.url)
+            return html2text(self.body(),self.url.url)
         except Exception, e:
             return "[error converting HTML to Text: %s]" % str(e)
 
     def substantial(self):
         return self.length > 1024
+
+    def body(self):
+        dmp = diff_match_patch.diff_match_patch()
+        return dmp.patch_apply(dmp.patch_fromText(self.patch), self.url.content)[0]

@@ -30,13 +30,15 @@ def add(request):
                 )
         else:
             url = q[0]
+        body = request.POST.get('body', '')
+        patch = url.get_patch(body)
         r = Response.objects.create(
             url=url,
             status=int(request.POST.get('status','200')),
-            body=request.POST.get('body', ''),
+            patch=patch,
             length=len(request.POST.get('body', '')),
             )
-        add_to_solr(r)
+        add_to_solr(r, body)
         return HttpResponse("OK")
     return HttpResponse("POST only")
 
@@ -49,7 +51,12 @@ def response(request, id):
 
 def response_raw(request, id):
     r = Response.objects.get(id=id)
-    return HttpResponse(r.body, content_type="text/plain")
+    return HttpResponse(r.body(), content_type="text/plain")
+
+
+def response_patch(request, id):
+    r = Response.objects.get(id=id)
+    return HttpResponse(r.patch, content_type="text/plain")
 
 
 def extract_response(result):
