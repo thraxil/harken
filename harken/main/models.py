@@ -7,15 +7,20 @@ def add_to_solr(response):
     conn.add([
             dict(
                 id="response:%d" % response.id,
-                name=response.url,
+                name=response.url.url,
                 text=response.body,
                 )
             ])
 
-class Response(models.Model):
-    url = models.URLField()
-    status = models.IntegerField(default=200)
+class Url(models.Model):
+    url = models.URLField(db_index=True)
+    content = models.TextField(blank=True, null=True, default="")
     content_type = models.CharField(max_length=256, blank=True, default="")
+
+
+class Response(models.Model):
+    url = models.ForeignKey(Url)
+    status = models.IntegerField(default=200)
     body = models.TextField(blank=True, null=True, default="")
     length = models.IntegerField(default=0)
     visited = models.DateTimeField(auto_now_add=True)
@@ -27,11 +32,11 @@ class Response(models.Model):
         return "/response/%d/" % self.id
 
     def is_html(self):
-        return self.content_type.startswith("text/html")
+        return self.url.content_type.startswith("text/html")
 
     def as_markdown(self):
         try:
-            return html2text(self.body,self.url)
+            return html2text(self.body,self.url.url)
         except Exception, e:
             return "[error converting HTML to Text: %s]" % str(e)
 

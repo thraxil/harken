@@ -1,5 +1,5 @@
 from annoying.decorators import render_to
-from harken.main.models import Response, add_to_solr
+from harken.main.models import Response, add_to_solr, Url
 from django.http import HttpResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from pysolr import Solr, SolrError
@@ -20,10 +20,19 @@ def index(request, page=1):
 
 def add(request):
     if request.method == "POST":
+        q = Url.objects.filter(url=request.POST['url'][:200])
+        url = None
+        if q.count() == 0:
+            url = Url.objects.create(
+                url=request.POST['url'][:200],
+                content_type=request.POST.get('content_type', ''),
+                content=request.POST.get('body', ''),
+                )
+        else:
+            url = q[0]
         r = Response.objects.create(
-            url=request.POST['url'][:200],
+            url=url,
             status=int(request.POST.get('status','200')),
-            content_type=request.POST.get('content_type', ''),
             body=request.POST.get('body', ''),
             length=len(request.POST.get('body', '')),
             )

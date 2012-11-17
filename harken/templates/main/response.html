@@ -2,10 +2,10 @@
 {% load markup %}
 
 {% block content %}
-<h2>{{response.url}}</h2>
+<h2>{{response.url.url}}</h2>
 <div>{{response.visited}}
 [<b>{{response.status}}</b>
-<i>{{response.content_type}}</i>]</div>
+<i>{{response.url.content_type}}</i>]</div>
 
 {% if response.is_html %}
 <p><a href="raw/">Raw View</a></p>
