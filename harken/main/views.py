@@ -1,8 +1,9 @@
 from annoying.decorators import render_to
-from harken.main.models import Response, add_to_solr, Url
+from harken.main.models import Response, add_to_solr, Url, Domain
 from django.http import HttpResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from pysolr import Solr, SolrError
+from urlparse import urlparse
 
 
 @render_to('main/index.html')
@@ -27,10 +28,18 @@ def add(request):
         q = Url.objects.filter(url=request.POST['url'][:200])
         url = None
         if q.count() == 0:
+            netloc = urlparse(request.POST['url'][:200]).netloc.lower()
+            d = None
+            q2 = Domain.objects.filter(domain=netloc)
+            if q2.count() == 0:
+                d = Domain.objects.create(domain=netloc)
+            else:
+                d = q2[0]
             url = Url.objects.create(
                 url=request.POST['url'][:200],
                 content_type=request.POST.get('content_type', ''),
                 content=request.POST.get('body', ''),
+                domain=d,
                 )
         else:
             url = q[0]

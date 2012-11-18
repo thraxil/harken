@@ -3,6 +3,7 @@ from html2text import wrapwrite, html2text
 from pysolr import Solr, SolrError
 import diff_match_patch
 
+
 def add_to_solr(response, body):
     conn = Solr('http://worker.thraxil.org:8080/solr/')
     conn.add([
@@ -13,10 +14,15 @@ def add_to_solr(response, body):
                 )
             ])
 
+class Domain(models.Model):
+    domain = models.CharField(max_length=256, db_index=True)
+
+
 class Url(models.Model):
     url = models.URLField(db_index=True)
     content = models.TextField(blank=True, null=True, default="")
     content_type = models.CharField(max_length=256, blank=True, default="")
+    domain = models.ForeignKey(Domain, null=True)
 
     def get_absolute_url(self):
         return "/url/%d/" % self.id
@@ -49,9 +55,6 @@ class Response(models.Model):
             return html2text(self.body(),self.url.url)
         except Exception, e:
             return "[error converting HTML to Text: %s]" % str(e)
-
-    def substantial(self):
-        return self.length > 1024
 
     def body(self):
         dmp = diff_match_patch.diff_match_patch()
