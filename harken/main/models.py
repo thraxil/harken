@@ -22,7 +22,7 @@ class Url(models.Model):
     url = models.URLField(db_index=True)
     content = models.TextField(blank=True, null=True, default="")
     content_type = models.CharField(max_length=256, blank=True, default="")
-    domain = models.ForeignKey(Domain, null=True)
+    domain = models.ForeignKey(Domain)
 
     def get_absolute_url(self):
         return "/url/%d/" % self.id
