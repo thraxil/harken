@@ -20,6 +20,10 @@ def index(request, page=1):
 
 def add(request):
     if request.method == "POST":
+        body = request.POST.get('body', '')
+        if len(body) < 1024:
+            # ignore small ones
+            return HttpResponse("OK")
         q = Url.objects.filter(url=request.POST['url'][:200])
         url = None
         if q.count() == 0:
@@ -30,7 +34,6 @@ def add(request):
                 )
         else:
             url = q[0]
-        body = request.POST.get('body', '')
         patch = url.get_patch(body)
         r = Response.objects.create(
             url=url,
