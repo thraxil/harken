@@ -10,7 +10,7 @@
 	</td>
 	<td>{{response.length|filesizeformat}}</td>
 	<td>
-		<span class="{% if response.substantial %}substantial{% else %}insubstantial{% endif %}">{{response.url.url|truncatechars:100}}</span>
+		{{response.url.url|truncatechars:100}}
 	</td>
 </tr>
 {% endfor %}

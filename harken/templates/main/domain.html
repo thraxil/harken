@@ -2,7 +2,7 @@
 {% load markup %}
 
 {% block content %}
-<h2>{{domain.domain}}</h2>
+<h2>Domain: {{domain.domain}}</h2>
 
 <table class="table table-condensed table-bordered table-striped">
 {% for url in domain.url_set.all %}
