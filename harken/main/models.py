@@ -18,6 +18,9 @@ class Url(models.Model):
     content = models.TextField(blank=True, null=True, default="")
     content_type = models.CharField(max_length=256, blank=True, default="")
 
+    def get_absolute_url(self):
+        return "/url/%d/" % self.id
+
     def get_patch(self, content=""):
         """ return a text patch of the supplied content against
         existing content """

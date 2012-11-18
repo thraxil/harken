@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load markup %}
+
+{% block content %}
+<h2>{{url.url}}</h2>
+<div><i>{{url.content_type}}</i></div>
+
+<table class="table table-condensed table-bordered table-striped">
+{% for response in url.response_set.all %}
+<tr>
+	<td>
+		<a href="{{response.get_absolute_url}}">{{response.visited}}</a>
+	</td>
+	<td>{{response.length|filesizeformat}}</td>
+</tr>
+{% endfor %}
+
+
+{% endblock %}

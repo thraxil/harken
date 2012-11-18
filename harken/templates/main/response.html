@@ -2,7 +2,7 @@
 {% load markup %}
 
 {% block content %}
-<h2>{{response.url.url}}</h2>
+<h2><a href="{{response.url.get_absolute_url}}">{{response.url.url}}</a></h2>
 <div>{{response.visited}}
 [<b>{{response.status}}</b>
 <i>{{response.url.content_type}}</i>]</div>

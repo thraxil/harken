@@ -59,6 +59,11 @@ def response_patch(request, id):
     return HttpResponse(r.patch, content_type="text/plain")
 
 
+@render_to('main/url.html')
+def url_view(request, id):
+    u = Url.objects.get(id=id)
+    return dict(url=u)
+
 def extract_response(result):
     return Response.objects.get(id=result['id'].split(":")[1])
     
