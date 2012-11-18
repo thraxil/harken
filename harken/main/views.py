@@ -76,6 +76,13 @@ def url_view(request, id):
     u = Url.objects.get(id=id)
     return dict(url=u)
 
+
+@render_to('main/domain.html')
+def domain(request, id):
+    d = Domain.objects.get(id=id)
+    return dict(domain=d)
+
+
 def extract_response(result):
     return Response.objects.get(id=result['id'].split(":")[1])
     

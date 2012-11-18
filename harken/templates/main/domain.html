@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load markup %}
+
+{% block content %}
+<h2>{{domain.domain}}</h2>
+
+<table class="table table-condensed table-bordered table-striped">
+{% for url in domain.url_set.all %}
+<tr>
+	<td>
+		<a href="{{url.get_absolute_url}}">{{url.url}}</a>
+	</td>
+	<td>
+		{{url.response_set.all.count}}
+	</td>
+</tr>
+{% endfor %}
+
+
+{% endblock %}

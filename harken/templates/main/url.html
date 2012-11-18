@@ -3,6 +3,7 @@
 
 {% block content %}
 <h2>{{url.url}}</h2>
+<div><a href="{{url.domain.get_absolute_url}}">{{url.domain.domain}}</a></div>
 <div><i>{{url.content_type}}</i></div>
 
 <table class="table table-condensed table-bordered table-striped">

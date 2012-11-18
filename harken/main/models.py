@@ -17,6 +17,9 @@ def add_to_solr(response, body):
 class Domain(models.Model):
     domain = models.CharField(max_length=256, db_index=True)
 
+    def get_absolute_url(self):
+        return "/domain/%d/" % self.id
+
 
 class Url(models.Model):
     url = models.URLField(db_index=True)
