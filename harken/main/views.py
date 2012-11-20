@@ -117,6 +117,11 @@ def domain(request, id):
     return dict(domain=d)
 
 
+@render_to('main/domains.html')
+def domain_index(request):
+    return dict(domains=Domain.objects.all())
+
+
 def extract_response(result):
     try:
         return Response.objects.get(id=result['id'].split(":")[1])
