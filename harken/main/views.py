@@ -95,7 +95,6 @@ def delete_domain(request, id):
     if request.method == "POST":
         for u in d.url_set.all():
             for r in u.response_set.all():
-                r = Response.objects.get(id=id)
                 conn = Solr('http://worker.thraxil.org:8080/solr/')
                 conn.delete("result:%d" % r.id)
                 r.delete()
