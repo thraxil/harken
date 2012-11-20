@@ -79,6 +79,30 @@ def delete_response(request, id):
         r.delete()
     return HttpResponseRedirect("/")
 
+
+def delete_url(request, id):
+    if request.method == "POST":
+        u = Url.objects.get(id=id)
+        for r in u.response_set.all():
+            conn = Solr('http://worker.thraxil.org:8080/solr/')
+            conn.delete("result:%d" % r.id)
+            r.delete()
+    return HttpResponseRedirect("/")
+
+
+def delete_domain(request, id):
+    d = Domain.objects.get(id=id)
+    if request.method == "POST":
+        for u in d.url_set.all():
+            for r in u.response_set.all():
+                r = Response.objects.get(id=id)
+                conn = Solr('http://worker.thraxil.org:8080/solr/')
+                conn.delete("result:%d" % r.id)
+                r.delete()
+    return HttpResponseRedirect("/")
+
+
+
 @render_to('main/url.html')
 def url_view(request, id):
     u = Url.objects.get(id=id)

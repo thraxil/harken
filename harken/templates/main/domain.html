@@ -4,6 +4,12 @@
 {% block content %}
 <h2>Domain: {{domain.domain}}</h2>
 
+<form action="delete/" method="post">
+  <input type="submit"
+	 value="delete" />
+</form>
+
+
 <table class="table table-condensed table-bordered table-striped">
 {% for url in domain.url_set.all %}
 <tr>
