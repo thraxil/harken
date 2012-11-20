@@ -84,7 +84,10 @@ def domain(request, id):
 
 
 def extract_response(result):
-    return Response.objects.get(id=result['id'].split(":")[1])
+    try:
+        return Response.objects.get(id=result['id'].split(":")[1])
+    except Response.DoesNotExist:
+        return None
     
 
 @render_to('main/search.html')
@@ -93,5 +96,5 @@ def search(request):
     if not query:
         return dict(query=query)
     conn = Solr('http://worker.thraxil.org:8080/solr/')
-    results = [extract_response(r) for r in conn.search(query)]
+    results = [res for res in [extract_response(r) for r in conn.search(query)] if res is not None]
     return dict(query=query, responses=results)
