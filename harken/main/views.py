@@ -87,6 +87,7 @@ def delete_url(request, id):
             conn = Solr('http://worker.thraxil.org:8080/solr/')
             conn.delete("result:%d" % r.id)
             r.delete()
+        u.delete()
     return HttpResponseRedirect("/")
 
 
@@ -98,6 +99,8 @@ def delete_domain(request, id):
                 conn = Solr('http://worker.thraxil.org:8080/solr/')
                 conn.delete("result:%d" % r.id)
                 r.delete()
+            u.delete()
+        d.delete()
     return HttpResponseRedirect("/")
 
 
