@@ -1,6 +1,6 @@
 from annoying.decorators import render_to
 from harken.main.models import Response, add_to_solr, Url, Domain
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from pysolr import Solr, SolrError
 from urlparse import urlparse
@@ -70,6 +70,14 @@ def response_patch(request, id):
     r = Response.objects.get(id=id)
     return HttpResponse(r.patch, content_type="text/plain")
 
+
+def delete_response(request, id):
+    if request.method == "POST":
+        r = Response.objects.get(id=id)
+        conn = Solr('http://worker.thraxil.org:8080/solr/')
+        conn.delete("result:%d" % r.id)
+        r.delete()
+    return HttpResponseRedirect("/")
 
 @render_to('main/url.html')
 def url_view(request, id):

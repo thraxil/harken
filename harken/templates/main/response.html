@@ -7,6 +7,11 @@
 [<b>{{response.status}}</b>
 <i>{{response.url.content_type}}</i>]</div>
 
+<form action="delete/" method="post">
+  <input type="submit"
+	 value="delete" />
+</form>
+
 {% if response.is_html %}
 <p><a href="raw/">Raw View</a></p>
 <hr />
