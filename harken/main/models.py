@@ -2,6 +2,8 @@ from django.db import models
 from html2text import wrapwrite, html2text
 from pysolr import Solr, SolrError
 import diff_match_patch
+import nltk
+from topia.termextract import extract
 
 
 def add_to_solr(response, body):
@@ -20,6 +22,29 @@ class Domain(models.Model):
     def get_absolute_url(self):
         return "/domain/%d/" % self.id
 
+def allow_term(t):
+    if u"\u2019" in t[0]:
+        return False
+    if u'\u201c' in t[0]:
+        return False
+    if u'\u201d' in t[0]:
+        return False
+    if u'\u2014' in t[0]:
+        return False
+    if '/' in t[0]:
+        return False
+    if '"' in t[0]:
+        return False
+    if ')' in t[0]:
+        return False
+    if ';' in t[0]:
+        return False
+    if len(t[0]) < 3:
+        return False
+    if t[0] == 'class':
+        return False
+    return True
+
 
 class Url(models.Model):
     url = models.URLField(db_index=True)
@@ -35,6 +60,13 @@ class Url(models.Model):
         existing content """
         dmp = diff_match_patch.diff_match_patch()
         return dmp.patch_toText(dmp.patch_make(self.content, content))
+
+    def terms(self):
+        raw = nltk.clean_html(self.content)
+        extractor = extract.TermExtractor()
+        return list(reversed(
+            sorted([t for t in extractor(raw) if allow_term(t)],
+                   key=lambda x: x[1])))[:20]
 
 
 class Response(models.Model):

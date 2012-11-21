@@ -11,6 +11,12 @@
 	 value="delete" />
 </form>
 
+<ul>Terms
+	{% for term in url.terms %}
+	<li>{{term.0}}</li>
+	{% endfor %}
+</ul>
+
 
 <table class="table table-condensed table-bordered table-striped">
 {% for response in url.response_set.all %}
