@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Terms</h1>
+{% for term in terms %}
+<a href="{{term.get_absolute_url}}">{{term.term}}</a>
+{% endfor %}
+{% endblock %}

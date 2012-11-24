@@ -142,3 +142,14 @@ def search(request):
     results = [res for res in [extract_response(r) for r in conn.search(query)]
                if res is not None]
     return dict(query=query, responses=results)
+
+
+@render_to('main/term.html')
+def term(request, id):
+    d = Term.objects.get(id=id)
+    return dict(term=d)
+
+
+@render_to('main/terms.html')
+def term_index(request):
+    return dict(terms=Term.objects.all())

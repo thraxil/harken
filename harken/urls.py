@@ -40,6 +40,10 @@ urlpatterns = patterns('',
                         'harken.main.views.domain_index'),
                        (r'^domain/(?P<id>\d+)/$',
                         'harken.main.views.domain'),
+
+                       (r'term/(?P<id>\d+)/$', 'harken.main.views.term'),
+                       (r'term/$', 'harken.main.views.term_index'),
+
                        (r'^admin/', include(admin.site.urls)),
                        (r'^munin/',include('munin.urls')),
 											 (r'^stats/', direct_to_template, {'template': 'stats.html'}),
