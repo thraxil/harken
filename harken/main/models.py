@@ -46,6 +46,10 @@ def allow_term(t):
     return True
 
 
+def normalize_term(term):
+    return term[0].lower()
+
+
 class Url(models.Model):
     url = models.URLField(db_index=True)
     content = models.TextField(blank=True, null=True, default="")
@@ -64,9 +68,13 @@ class Url(models.Model):
     def terms(self):
         raw = nltk.clean_html(self.content)
         extractor = extract.TermExtractor()
-        return list(reversed(
-            sorted([t for t in extractor(raw) if allow_term(t)],
-                   key=lambda x: x[1])))[:20]
+        return list(
+            set(
+                list(
+                    reversed(
+                        sorted([normalize_term(t) for t in extractor(raw)
+                                if allow_term(t)],
+                               key=lambda x: x[1])))[:20]))
 
 
 class Response(models.Model):
