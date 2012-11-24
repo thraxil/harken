@@ -79,6 +79,9 @@ class Url(models.Model):
 class Term(models.Model):
     term = models.CharField(max_length=256, db_index=True)
 
+    def get_absolute_url(self):
+        return "/term/%d/" % self.id
+
 
 class UrlTerm(models.Model):
     url = models.ForeignKey(Url)

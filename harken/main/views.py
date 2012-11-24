@@ -44,7 +44,7 @@ def add(request):
                 domain=d,
                 )
             for t in url.terms():
-                term, _ = Term.objects.get_or_create(term=t)
+                term, _ = Term.objects.get_or_create(term=t[:200])
                 urlterm, _ = UrlTerm.objects.get_or_create(term=term, url=url)
         else:
             url = q[0]

@@ -12,8 +12,8 @@
 </form>
 
 <ul>Terms
-	{% for term in url.terms %}
-	<li>{{term}}</li>
+	{% for ut in url.urlterm_set.all %}
+	<li><a href="{{ut.term.get_absolute_url}}">{{ut.term.term}}</a></li>
 	{% endfor %}
 </ul>
 
