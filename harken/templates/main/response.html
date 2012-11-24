@@ -15,7 +15,7 @@
 {% if response.is_html %}
 <p><a href="raw/">Raw View</a></p>
 <hr />
-{{response.as_markdown|markdown}}
+{{response.clean_text|markdown}}
 {% else %}
 <pre>{{response.body}}</pre>
 {% endif %}

@@ -3,6 +3,7 @@ from html2text import html2text
 from pysolr import Solr
 import diff_match_patch
 import nltk
+import re
 from topia.termextract import extract
 
 
@@ -79,6 +80,9 @@ class Url(models.Model):
 class Term(models.Model):
     term = models.CharField(max_length=256, db_index=True)
 
+    class Meta:
+        ordering = ['term',]
+
     def get_absolute_url(self):
         return "/term/%d/" % self.id
 
@@ -106,9 +110,15 @@ class Response(models.Model):
 
     def as_markdown(self):
         try:
-            return html2text(self.body(), self.url.url)
+            return nltk.clean_html(self.body())
+#            return html2text(self.body(), self.url.url)
         except Exception, e:
             return "[error converting HTML to Text: %s]" % str(e)
+
+    def clean_text(self):
+        text = nltk.clean_html(self.body())
+        return re.sub(r'\s{2,}', '\n\n', text)
+        
 
     def body(self):
         dmp = diff_match_patch.diff_match_patch()
