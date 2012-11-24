@@ -74,6 +74,15 @@ class Url(models.Model):
         return [normalize_term(t) for t in all_terms][:20]
 
 
+class Term(models.Model):
+    term = models.CharField(max_length=256, db_index=True)
+    
+
+class UrlTerm(models.Model):
+    url = models.ForeignKey(Url)
+    term = models.ForeignKey(Term)
+
+
 class Response(models.Model):
     url = models.ForeignKey(Url)
     status = models.IntegerField(default=200)
