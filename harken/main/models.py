@@ -68,13 +68,10 @@ class Url(models.Model):
     def terms(self):
         raw = nltk.clean_html(self.content)
         extractor = extract.TermExtractor()
-        return list(
-            set(
-                list(
-                    reversed(
-                        sorted([normalize_term(t) for t in extractor(raw)
-                                if allow_term(t)],
-                               key=lambda x: x[1])))[:20]))
+        all_terms = list(reversed(sorted([t for t in extractor(raw)
+                            if allow_term(t)],
+                           key=lambda x: x[1])))
+        return [normalize_term(t) for t in all_terms][:20]
 
 
 class Response(models.Model):
