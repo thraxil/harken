@@ -1,8 +1,9 @@
 from annoying.decorators import render_to
 from harken.main.models import Response, add_to_solr, Url, Domain
+from harken.main.models import Term, UrlTerm
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from pysolr import Solr, SolrError
+from pysolr import Solr
 from urlparse import urlparse
 
 
@@ -18,6 +19,7 @@ def index(request, page=1):
         responses = p.page(p.num_pages)
     return dict(responses=responses.object_list,
                 paginator=responses)
+
 
 def add(request):
     if request.method == "POST":
@@ -41,12 +43,15 @@ def add(request):
                 content=request.POST.get('body', ''),
                 domain=d,
                 )
+            for t in url.terms():
+                term, _ = Term.objects.get_or_create(term=t)
+                urlterm, _ = UrlTerm.objects.get_or_create(term=term, url=url)
         else:
             url = q[0]
         patch = url.get_patch(body)
         r = Response.objects.create(
             url=url,
-            status=int(request.POST.get('status','200')),
+            status=int(request.POST.get('status', '200')),
             patch=patch,
             length=len(request.POST.get('body', '')),
             )
@@ -104,7 +109,6 @@ def delete_domain(request, id):
     return HttpResponseRedirect("/")
 
 
-
 @render_to('main/url.html')
 def url_view(request, id):
     u = Url.objects.get(id=id)
@@ -127,7 +131,7 @@ def extract_response(result):
         return Response.objects.get(id=result['id'].split(":")[1])
     except Response.DoesNotExist:
         return None
-    
+
 
 @render_to('main/search.html')
 def search(request):
@@ -135,5 +139,6 @@ def search(request):
     if not query:
         return dict(query=query)
     conn = Solr('http://worker.thraxil.org:8080/solr/')
-    results = [res for res in [extract_response(r) for r in conn.search(query)] if res is not None]
+    results = [res for res in [extract_response(r) for r in conn.search(query)]
+               if res is not None]
     return dict(query=query, responses=results)

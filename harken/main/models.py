@@ -1,6 +1,6 @@
 from django.db import models
-from html2text import wrapwrite, html2text
-from pysolr import Solr, SolrError
+from html2text import html2text
+from pysolr import Solr
 import diff_match_patch
 import nltk
 from topia.termextract import extract
@@ -16,11 +16,13 @@ def add_to_solr(response, body):
                 )
             ])
 
+
 class Domain(models.Model):
     domain = models.CharField(max_length=256, db_index=True)
 
     def get_absolute_url(self):
         return "/domain/%d/" % self.id
+
 
 def allow_term(t):
     if u"\u2019" in t[0]:
@@ -76,7 +78,7 @@ class Url(models.Model):
 
 class Term(models.Model):
     term = models.CharField(max_length=256, db_index=True)
-    
+
 
 class UrlTerm(models.Model):
     url = models.ForeignKey(Url)
@@ -101,10 +103,11 @@ class Response(models.Model):
 
     def as_markdown(self):
         try:
-            return html2text(self.body(),self.url.url)
+            return html2text(self.body(), self.url.url)
         except Exception, e:
             return "[error converting HTML to Text: %s]" % str(e)
 
     def body(self):
         dmp = diff_match_patch.diff_match_patch()
-        return dmp.patch_apply(dmp.patch_fromText(self.patch), self.url.content)[0]
+        return dmp.patch_apply(dmp.patch_fromText(self.patch),
+                               self.url.content)[0]
