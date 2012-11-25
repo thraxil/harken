@@ -1,6 +1,7 @@
 from annoying.decorators import render_to
 from harken.main.models import Response, add_to_solr, Url, Domain
-from harken.main.models import Term, UrlTerm
+from harken.main.models import Term, UrlTerm, sha1hash
+from harken.main.models import terms
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponse, HttpResponseRedirect
@@ -42,13 +43,12 @@ def add(request):
             url = Url.objects.create(
                 url=request.POST['url'][:200],
                 content_type=request.POST.get('content_type', ''),
-                content=request.POST.get('body', ''),
+                content=body,
                 domain=d,
+                sha1hash=sha1hash(body)
                 )
-            url.sha1hash = url.hash()
-            url.save()
-            url.write_gzip()
-            for t in url.terms():
+            url.write_gzip(body)
+            for t in terms(body):
                 term, _ = Term.objects.get_or_create(term=t[:200])
                 urlterm, _ = UrlTerm.objects.get_or_create(term=term, url=url)
         else:

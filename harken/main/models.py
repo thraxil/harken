@@ -12,9 +12,13 @@ import gzip
 
 
 def path_from_hash(sha1):
-    # convert from "8b7e052215635bfc2774e23dcb5c7aaadf81b42b" 
-    #           to "8b/7e/05/22/15/63/5b/fc/27/74/e2/3d/cb/5c/7a/aa/df/81/b4/2b"
-    return os.path.join(*["%s%s" % (a,b) for (a,b) in zip(sha1[::2],sha1[1::2])])
+    """ convert from
+    "8b7e052215635bfc2774e23dcb5c7aaadf81b42b"
+    to
+    "8b/7e/05/22/15/63/5b/fc/27/74/e2/3d/cb/5c/7a/aa/df/81/b4/2b"
+    """
+    return os.path.join(*["%s%s" % (a, b) for (a, b)
+                          in zip(sha1[::2], sha1[1::2])])
 
 
 def add_to_solr(response, body):
@@ -45,7 +49,7 @@ def allow_term(t):
         u"\u2019", u'\u201c', u'\u201d', u'\u2014',
         '/', '"', ')', ';', '\\', '|', '$',
         '+', '(', '[', ']', '{', '}', '@',
-        '&', '%', '=', '*', '#', 
+        '&', '%', '=', '*', '#',
         ]
     for c in disallowed:
         if c in t:
@@ -60,6 +64,21 @@ def normalize_term(term):
     return term[0].lower()
 
 
+def sha1hash(content):
+    sha1 = hashlib.sha1()
+    sha1.update(content.encode('utf-8'))
+    return sha1.hexdigest()
+
+
+def terms(self, content):
+    raw = nltk.clean_html(content)
+    extractor = extract.TermExtractor()
+    all_terms = list(reversed(sorted([t for t in extractor(raw)
+                                      if allow_term(t[0])],
+                                     key=lambda x: x[1])))
+    return [normalize_term(t) for t in all_terms][:20]
+
+
 class Url(models.Model):
     url = models.URLField(db_index=True)
     content = models.TextField(blank=True, null=True, default="")
@@ -70,24 +89,14 @@ class Url(models.Model):
     def get_absolute_url(self):
         return "/url/%d/" % self.id
 
+    def get_content(self):
+        return self.read_gzip()
+
     def get_patch(self, content=""):
         """ return a text patch of the supplied content against
         existing content """
         dmp = diff_match_patch.diff_match_patch()
-        return dmp.patch_toText(dmp.patch_make(self.content, content))
-
-    def terms(self):
-        raw = nltk.clean_html(self.content)
-        extractor = extract.TermExtractor()
-        all_terms = list(reversed(sorted([t for t in extractor(raw)
-                            if allow_term(t[0])],
-                           key=lambda x: x[1])))
-        return [normalize_term(t) for t in all_terms][:20]
-
-    def hash(self):
-        sha1 = hashlib.sha1()
-        sha1.update(self.content.encode('utf-8'))
-        return sha1.hexdigest()
+        return dmp.patch_toText(dmp.patch_make(self.get_content(), content))
 
     def path(self):
         return os.path.join(
@@ -96,14 +105,14 @@ class Url(models.Model):
             "content.gz"
             )
 
-    def write_gzip(self):
+    def write_gzip(self, content):
         p = self.path()
         try:
             os.makedirs(os.path.dirname(p))
         except:
             pass
         f = gzip.open(p, 'wb')
-        f.write(self.content.encode('utf-8'))
+        f.write(content.encode('utf-8'))
         f.close()
 
     def read_gzip(self):
@@ -112,7 +121,7 @@ class Url(models.Model):
         file_content = f.read()
         f.close()
         return file_content
-        
+
 
 class Term(models.Model):
     term = models.CharField(max_length=256, db_index=True)
@@ -159,4 +168,4 @@ class Response(models.Model):
     def body(self):
         dmp = diff_match_patch.diff_match_patch()
         return dmp.patch_apply(dmp.patch_fromText(self.patch),
-                               self.url.content)[0]
+                               self.url.get_content())[0]
