@@ -43,6 +43,8 @@ urlpatterns = patterns('',
 
                        (r'term/(?P<id>\d+)/$', 'harken.main.views.term'),
                        (r'term/$', 'harken.main.views.term_index'),
+                       (r'^term/(?P<id>\d+)/delete/$',
+                        'harken.main.views.delete_term'),
 
                        (r'^admin/', include(admin.site.urls)),
                        (r'^munin/',include('munin.urls')),

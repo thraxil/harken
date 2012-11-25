@@ -3,6 +3,12 @@
 {% block content %}
 <h1><a href="/term/">Term</a>: {{term.term}}</h1>
 
+<form action="delete/" method="post">
+  <input type="submit"
+	 value="delete" />
+</form>
+
+
 <ul>
 {% for ut in term.urlterm_set.all %}
 <li><a href="{{ut.url.get_absolute_url}}">{{ut.url.url}}</a></li>

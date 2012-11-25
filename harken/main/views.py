@@ -167,3 +167,11 @@ def term(request, id):
 @render_to('main/terms.html')
 def term_index(request):
     return dict(terms=Term.objects.all())
+
+@login_required
+def delete_term(request, id):
+    t = Term.objects.get(id=id)
+    if request.method == "POST":
+        t.urlterm_set.all().delete()
+        t.delete()
+    return HttpResponseRedirect("/term/")
