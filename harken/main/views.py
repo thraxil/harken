@@ -47,6 +47,7 @@ def add(request):
                 )
             url.sha1hash = url.hash()
             url.save()
+            url.write_gzip()
             for t in url.terms():
                 term, _ = Term.objects.get_or_create(term=t[:200])
                 urlterm, _ = UrlTerm.objects.get_or_create(term=term, url=url)

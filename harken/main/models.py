@@ -6,6 +6,10 @@ import re
 from topia.termextract import extract
 import hashlib
 import os.path
+import os
+from django.conf import settings
+import gzip
+
 
 def path_from_hash(sha1):
     # convert from "8b7e052215635bfc2774e23dcb5c7aaadf81b42b" 
@@ -84,6 +88,31 @@ class Url(models.Model):
         sha1 = hashlib.sha1()
         sha1.update(self.content.encode('utf-8'))
         return sha1.hexdigest()
+
+    def path(self):
+        return os.path.join(
+            settings.MEDIA_ROOT,
+            path_from_hash(self.sha1hash),
+            "content.gz"
+            )
+
+    def write_gzip(self):
+        p = self.path()
+        try:
+            os.makedirs(os.path.dirname(p))
+        except:
+            pass
+        f = gzip.open(p, 'wb')
+        f.write(self.content.encode('utf-8'))
+        f.close()
+
+    def read_gzip(self):
+        p = self.path()
+        f = gzip.open(p, 'rb')
+        file_content = f.read()
+        f.close()
+        return file_content
+        
 
 class Term(models.Model):
     term = models.CharField(max_length=256, db_index=True)
