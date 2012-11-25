@@ -4,6 +4,13 @@ import diff_match_patch
 import nltk
 import re
 from topia.termextract import extract
+import hashlib
+import os.path
+
+def path_from_hash(sha1):
+    # convert from "8b7e052215635bfc2774e23dcb5c7aaadf81b42b" 
+    #           to "8b/7e/05/22/15/63/5b/fc/27/74/e2/3d/cb/5c/7a/aa/df/81/b4/2b"
+    return os.path.join(*["%s%s" % (a,b) for (a,b) in zip(sha1[::2],sha1[1::2])])
 
 
 def add_to_solr(response, body):
@@ -54,6 +61,7 @@ class Url(models.Model):
     content = models.TextField(blank=True, null=True, default="")
     content_type = models.CharField(max_length=256, blank=True, default="")
     domain = models.ForeignKey(Domain)
+    sha1hash = models.CharField(max_length=64, blank=True, default="")
 
     def get_absolute_url(self):
         return "/url/%d/" % self.id
@@ -72,6 +80,10 @@ class Url(models.Model):
                            key=lambda x: x[1])))
         return [normalize_term(t) for t in all_terms][:20]
 
+    def hash(self):
+        sha1 = hashlib.sha1()
+        sha1.update(self.content.encode('utf-8'))
+        return sha1.hexdigest()
 
 class Term(models.Model):
     term = models.CharField(max_length=256, db_index=True)
