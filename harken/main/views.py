@@ -45,6 +45,8 @@ def add(request):
                 content=request.POST.get('body', ''),
                 domain=d,
                 )
+            url.sha1hash = url.hash()
+            url.save()
             for t in url.terms():
                 term, _ = Term.objects.get_or_create(term=t[:200])
                 urlterm, _ = UrlTerm.objects.get_or_create(term=term, url=url)
