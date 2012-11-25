@@ -168,6 +168,7 @@ def term(request, id):
 def term_index(request):
     return dict(terms=Term.objects.all())
 
+
 @login_required
 def delete_term(request, id):
     t = Term.objects.get(id=id)

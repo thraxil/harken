@@ -1,5 +1,4 @@
 from django.db import models
-from html2text import html2text
 from pysolr import Solr
 import diff_match_patch
 import nltk
@@ -26,28 +25,16 @@ class Domain(models.Model):
 
 
 def allow_term(t):
-    if u"\u2019" in t[0]:
-        return False
-    if u'\u201c' in t[0]:
-        return False
-    if u'\u201d' in t[0]:
-        return False
-    if u'\u2014' in t[0]:
-        return False
-    if '/' in t[0]:
-        return False
-    if '"' in t[0]:
-        return False
-    if ')' in t[0]:
-        return False
-    if ';' in t[0]:
-        return False
-    if '\\' in t[0]:
-        return False
-    if '\xe2' in t[0]:
-        return False
-    if '|' in t[0]:
-        return False
+    disallowed = [
+        u"\u2019", u'\u201c', u'\u201d', u'\u2014',
+        '/', '"', ')', ';', '\\', '\xe2', '|', '$',
+        '+', '(', '[', ']', '{', '}', '@', '\xc2\xae',
+        '\xe2\x84\xa2', '&', '%',
+        ]
+    for c in disallowed:
+        if c in t[0]:
+            return False
+
     if len(t[0]) < 3:
         return False
     if len(t[0]) > 32:
@@ -89,7 +76,7 @@ class Term(models.Model):
     term = models.CharField(max_length=256, db_index=True)
 
     class Meta:
-        ordering = ['term',]
+        ordering = ['term', ]
 
     def get_absolute_url(self):
         return "/term/%d/" % self.id
@@ -126,7 +113,6 @@ class Response(models.Model):
     def clean_text(self):
         text = nltk.clean_html(self.body())
         return re.sub(r'\s{2,}', '\n\n', text)
-        
 
     def body(self):
         dmp = diff_match_patch.diff_match_patch()
