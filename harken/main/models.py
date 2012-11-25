@@ -27,7 +27,7 @@ def add_to_solr(response, body):
             dict(
                 id="response:%d" % response.id,
                 name=response.url.url,
-                text=body,
+                text=body.encode('utf-8'),
                 )
             ])
 
@@ -71,7 +71,7 @@ def sha1hash(content):
 
 
 def terms(content):
-    raw = nltk.clean_html(content)
+    raw = nltk.clean_html(content.encode('utf-8'))
     extractor = extract.TermExtractor()
     all_terms = list(reversed(sorted([t for t in extractor(raw)
                                       if allow_term(t[0])],
