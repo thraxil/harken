@@ -25,21 +25,22 @@ class Domain(models.Model):
 
 
 def allow_term(t):
+    if len(t) < 3:
+        return False
+    if len(t) > 32:
+        return False
+
     disallowed = [
         u"\u2019", u'\u201c', u'\u201d', u'\u2014',
-        '/', '"', ')', ';', '\\', '\xe2', '|', '$',
-        '+', '(', '[', ']', '{', '}', '@', '\xc2\xae',
-        '\xe2\x84\xa2', '&', '%',
+        '/', '"', ')', ';', '\\', '|', '$',
+        '+', '(', '[', ']', '{', '}', '@',
+        '&', '%', '=', '*', '#', 
         ]
     for c in disallowed:
-        if c in t[0]:
+        if c in t:
             return False
 
-    if len(t[0]) < 3:
-        return False
-    if len(t[0]) > 32:
-        return False
-    if t[0] == 'class':
+    if t == 'class':
         return False
     return True
 
@@ -67,7 +68,7 @@ class Url(models.Model):
         raw = nltk.clean_html(self.content)
         extractor = extract.TermExtractor()
         all_terms = list(reversed(sorted([t for t in extractor(raw)
-                            if allow_term(t)],
+                            if allow_term(t[0])],
                            key=lambda x: x[1])))
         return [normalize_term(t) for t in all_terms][:20]
 
