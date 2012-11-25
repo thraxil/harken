@@ -46,6 +46,8 @@ def allow_term(t):
         return False
     if '\xe2' in t[0]:
         return False
+    if '|' in t[0]:
+        return False
     if len(t[0]) < 3:
         return False
     if len(t[0]) > 32:
