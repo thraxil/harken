@@ -81,7 +81,6 @@ def terms(content):
 
 class Url(models.Model):
     url = models.URLField(db_index=True)
-    content = models.TextField(blank=True, null=True, default="")
     content_type = models.CharField(max_length=256, blank=True, default="")
     domain = models.ForeignKey(Domain)
     sha1hash = models.CharField(max_length=64, blank=True, default="")
