@@ -44,7 +44,6 @@ def add(request):
                 url = Url.objects.create(
                     url=request.POST['url'][:200],
                     content_type=request.POST.get('content_type', ''),
-                    content=body,
                     domain=d,
                     sha1hash=sha1hash(body)
                     )
