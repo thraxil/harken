@@ -104,7 +104,7 @@ SOUTH_TESTS_MIGRATE = False
 THUMBNAIL_SUBDIR = "thumbs"
 EMAIL_SUBJECT_PREFIX = "[harken] "
 EMAIL_HOST = 'localhost'
-SERVER_EMAIL = "harken@ccnmtl.columbia.edu"
+SERVER_EMAIL = "harken@thraxil.org"
 DEFAULT_FROM_EMAIL = SERVER_EMAIL
 
 # put any static media here to override app served static media
@@ -123,7 +123,7 @@ WIND_SERVICE = "cnmtl_full_np"
 WIND_PROFILE_HANDLERS = ['djangowind.auth.CDAPProfileHandler']
 WIND_AFFIL_HANDLERS = ['djangowind.auth.AffilGroupMapper','djangowind.auth.StaffMapper','djangowind.auth.SuperuserMapper']
 WIND_STAFF_MAPPER_GROUPS = ['tlc.cunix.local:columbia.edu']
-WIND_SUPERUSER_MAPPER_GROUPS = ['anp8','jb2410','zm4','egr2107','sld2131','amm8','mar227','jed2161']
+WIND_SUPERUSER_MAPPER_GROUPS = ['anp8',]
 
 SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 SESSION_COOKIE_HTTPONLY = True

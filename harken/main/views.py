@@ -1,12 +1,14 @@
 from annoying.decorators import render_to
 from harken.main.models import Response, add_to_solr, Url, Domain
 from harken.main.models import Term, UrlTerm
-from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.http import HttpResponse, HttpResponseRedirect
 from pysolr import Solr
 from urlparse import urlparse
 
 
+@login_required
 @render_to('main/index.html')
 def index(request, page=1):
     response_list = Response.objects.all()
@@ -60,22 +62,26 @@ def add(request):
     return HttpResponse("POST only")
 
 
+@login_required
 @render_to('main/response.html')
 def response(request, id):
     r = Response.objects.get(id=id)
     return dict(response=r)
 
 
+@login_required
 def response_raw(request, id):
     r = Response.objects.get(id=id)
     return HttpResponse(r.body(), content_type="text/plain")
 
 
+@login_required
 def response_patch(request, id):
     r = Response.objects.get(id=id)
     return HttpResponse(r.patch, content_type="text/plain")
 
 
+@login_required
 def delete_response(request, id):
     if request.method == "POST":
         r = Response.objects.get(id=id)
@@ -85,6 +91,7 @@ def delete_response(request, id):
     return HttpResponseRedirect("/")
 
 
+@login_required
 def delete_url(request, id):
     if request.method == "POST":
         u = Url.objects.get(id=id)
@@ -96,6 +103,7 @@ def delete_url(request, id):
     return HttpResponseRedirect("/")
 
 
+@login_required
 def delete_domain(request, id):
     d = Domain.objects.get(id=id)
     if request.method == "POST":
@@ -109,18 +117,21 @@ def delete_domain(request, id):
     return HttpResponseRedirect("/")
 
 
+@login_required
 @render_to('main/url.html')
 def url_view(request, id):
     u = Url.objects.get(id=id)
     return dict(url=u)
 
 
+@login_required
 @render_to('main/domain.html')
 def domain(request, id):
     d = Domain.objects.get(id=id)
     return dict(domain=d)
 
 
+@login_required
 @render_to('main/domains.html')
 def domain_index(request):
     return dict(domains=Domain.objects.all())
@@ -133,6 +144,7 @@ def extract_response(result):
         return None
 
 
+@login_required
 @render_to('main/search.html')
 def search(request):
     query = request.GET.get('q', '')
@@ -144,12 +156,14 @@ def search(request):
     return dict(query=query, responses=results)
 
 
+@login_required
 @render_to('main/term.html')
 def term(request, id):
     d = Term.objects.get(id=id)
     return dict(term=d)
 
 
+@login_required
 @render_to('main/terms.html')
 def term_index(request):
     return dict(terms=Term.objects.all())
