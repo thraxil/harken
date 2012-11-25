@@ -26,42 +26,45 @@ def index(request, page=1):
 
 def add(request):
     if request.method == "POST":
-        body = request.POST.get('body', '')
-        if len(body) < 1024:
-            # ignore small ones
-            return HttpResponse("OK")
-        q = Url.objects.filter(url=request.POST['url'][:200])
-        url = None
-        if q.count() == 0:
-            netloc = urlparse(request.POST['url'][:200]).netloc.lower()
-            d = None
-            q2 = Domain.objects.filter(domain=netloc)
-            if q2.count() == 0:
-                d = Domain.objects.create(domain=netloc)
+        try:
+            body = request.POST.get('body', '')
+            if len(body) < 1024:
+                # ignore small ones
+                return HttpResponse("OK")
+            q = Url.objects.filter(url=request.POST['url'][:200])
+            url = None
+            if q.count() == 0:
+                netloc = urlparse(request.POST['url'][:200]).netloc.lower()
+                d = None
+                q2 = Domain.objects.filter(domain=netloc)
+                if q2.count() == 0:
+                    d = Domain.objects.create(domain=netloc)
+                else:
+                    d = q2[0]
+                url = Url.objects.create(
+                    url=request.POST['url'][:200],
+                    content_type=request.POST.get('content_type', ''),
+                    content=body,
+                    domain=d,
+                    sha1hash=sha1hash(body)
+                    )
+                url.write_gzip(body)
+                for t in terms(body):
+                    term, _ = Term.objects.get_or_create(term=t[:200])
+                    urlterm, _ = UrlTerm.objects.get_or_create(term=term, url=url)
             else:
-                d = q2[0]
-            url = Url.objects.create(
-                url=request.POST['url'][:200],
-                content_type=request.POST.get('content_type', ''),
-                content=body,
-                domain=d,
-                sha1hash=sha1hash(body)
+                url = q[0]
+            patch = url.get_patch(body)
+            r = Response.objects.create(
+                url=url,
+                status=int(request.POST.get('status', '200')),
+                patch=patch,
+                length=len(request.POST.get('body', '')),
                 )
-            url.write_gzip(body)
-            for t in terms(body):
-                term, _ = Term.objects.get_or_create(term=t[:200])
-                urlterm, _ = UrlTerm.objects.get_or_create(term=term, url=url)
-        else:
-            url = q[0]
-        patch = url.get_patch(body)
-        r = Response.objects.create(
-            url=url,
-            status=int(request.POST.get('status', '200')),
-            patch=patch,
-            length=len(request.POST.get('body', '')),
-            )
-        add_to_solr(r, body)
-        return HttpResponse("OK")
+            add_to_solr(r, body)
+            return HttpResponse("OK")
+        except Exception, e:
+            return HttpResponse(str(e))
     return HttpResponse("POST only")
 
 
