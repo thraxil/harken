@@ -70,7 +70,7 @@ def sha1hash(content):
     return sha1.hexdigest()
 
 
-def terms(self, content):
+def terms(content):
     raw = nltk.clean_html(content)
     extractor = extract.TermExtractor()
     all_terms = list(reversed(sorted([t for t in extractor(raw)
@@ -96,7 +96,7 @@ class Url(models.Model):
         """ return a text patch of the supplied content against
         existing content """
         dmp = diff_match_patch.diff_match_patch()
-        return dmp.patch_toText(dmp.patch_make(self.get_content(), content))
+        return dmp.patch_toText(dmp.patch_make(self.get_content(), content.encode('utf-8')))
 
     def path(self):
         return os.path.join(

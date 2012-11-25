@@ -11,6 +11,7 @@ from restclient import POST
 PUB_SOCKET = "tcp://localhost:6666"
 HARKEN_SERVER = "http://harken.thraxil.org/add/"
 
+
 context = zmq.Context()
 socket = context.socket(zmq.SUB)
 socket.connect(PUB_SOCKET)
