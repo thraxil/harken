@@ -11,7 +11,7 @@ STATICMEDIA_MOUNTS = (
 )
 
 COMPRESS_ROOT = "/var/www/harken/harken/media/"
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 SENTRY_SITE = 'harken'
