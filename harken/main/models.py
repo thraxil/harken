@@ -44,7 +44,7 @@ def allow_term(t):
         return False
     if len(t) > 32:
         return False
-
+    t = t.decode('utf-8', errors='ignore')
     disallowed = [
         u"\u2019", u'\u201c', u'\u201d', u'\u2014',
         '/', '"', ')', ';', '\\', '|', '$',
