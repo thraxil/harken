@@ -82,7 +82,7 @@ def response_raw(request, id):
 @login_required
 def response_patch(request, id):
     r = Response.objects.get(id=id)
-    return HttpResponse(r.patch, content_type="text/plain")
+    return HttpResponse(r.get_patch(), content_type="text/plain")
 
 
 @login_required

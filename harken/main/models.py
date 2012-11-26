@@ -170,10 +170,14 @@ class Response(models.Model):
         text = nltk.clean_html(self.body())
         return re.sub(r'\s{2,}', '\n\n', text)
 
+    def get_patch(self):
+        return self.read_gzip()
+
     def body(self):
         dmp = diff_match_patch.diff_match_patch()
-        return dmp.patch_apply(dmp.patch_fromText(self.patch),
-                               self.url.get_content().decode('utf-8'))[0]
+        return dmp.patch_apply(
+            dmp.patch_fromText(self.get_patch().decode('utf-8')),
+            self.url.get_content().decode('utf-8'))[0]
 
     def path(self):
         return os.path.join(
