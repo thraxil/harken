@@ -96,8 +96,11 @@ class Url(models.Model):
         existing content """
         dmp = diff_match_patch.diff_match_patch()
         return dmp.patch_toText(
-            dmp.patch_make(self.get_content().encode('utf-8'),
-                           content.encode('utf-8')))
+            dmp.patch_make(
+                self.get_content().decode('utf-8'),
+                content.encode('ascii', 'xmlcharrefreplace'),
+                )
+            )
 
     def path(self):
         return os.path.join(
@@ -169,4 +172,4 @@ class Response(models.Model):
     def body(self):
         dmp = diff_match_patch.diff_match_patch()
         return dmp.patch_apply(dmp.patch_fromText(self.patch),
-                               self.url.get_content())[0]
+                               self.url.get_content().decode('utf-8'))[0]
