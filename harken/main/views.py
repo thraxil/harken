@@ -67,7 +67,7 @@ def add(request):
                 url=url,
                 status=int(request.POST.get('status', '200')),
                 patch=patch,
-                length=body,
+                length=len(body),
                 )
             steps.append("made response")
             add_to_solr(r, body)
