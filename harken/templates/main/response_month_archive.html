@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load markup %}
+
+{% block content %}
+<ul class="breadcrumb">
+<li><a href="/response/date/{{year}}/">{{year}}</a><span class="divider">/</span></li>
+<li class="active"><a href="/response/date/{{year}}/{{month}}/">{{month}}</a><span class="divider">/</span></li>
+</ul>
+
+
+Total: {{responses.count}}
+
+<ul>
+{% for day in days %}
+<li>{% if day.count %}
+<a href="{{day.day}}/">{{day.day}}: {{day.count}}</a>
+{% else %}
+{{day.day}}: {{day.count}}
+{% endif %}
+</li>
+
+{% endfor %}
+<ul>
+
+{% endblock %}

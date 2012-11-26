@@ -2,8 +2,17 @@
 {% load markup %}
 
 {% block content %}
+<ul class="breadcrumb">
+<li><a href="/response/date/{{response.visited.year}}/">{{response.visited.year}}</a><span class="divider">/</span></li>
+<li><a href="/response/date/{{response.visited.year}}/{{response.visited.month}}/">{{response.visited.month}}</a><span class="divider">/</span></li>
+<li><a href="/response/date/{{response.visited.year}}/{{response.visited.month}}/{{response.visited.day}}/">{{response.visited.day}}</a></li>
+</ul>
+
 <h2><a href="{{response.url.get_absolute_url}}">{{response.url.url}}</a></h2>
-<div>{{response.visited}}
+<div>
+
+
+	{{response.visited}}
 [<i>{{response.url.content_type}}</i>]</div>
 
 <form action="delete/" method="post">

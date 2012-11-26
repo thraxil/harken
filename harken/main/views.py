@@ -7,6 +7,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponse, HttpResponseRedirect
 from pysolr import Solr
 from urlparse import urlparse
+import calendar
 
 
 @login_required
@@ -70,6 +71,54 @@ def response(request, id):
     r = Response.objects.get(id=id)
     return dict(response=r)
 
+
+@login_required
+@render_to('main/response_year_archive.html')
+def response_year_archive(request, year=2012):
+    responses = Response.objects.filter(visited__year=year)
+    count = responses.count()
+    month_names = ["January", "February", "March", "April",
+                   "May", "June", "July", "August", "September",
+                   "October", "November", "December"]
+    months = []
+    for i, m in enumerate(month_names):
+        months.append(
+            dict(
+                count=responses.filter(visited__month=i+1).count(),
+                month=i+1,
+                name=m))
+    return dict(responses=responses, months=months, year=year)
+
+
+@login_required
+@render_to('main/response_month_archive.html')
+def response_month_archive(request, year=2012, month=1):
+    responses = Response.objects.filter(
+        visited__year=year,
+        visited__month=month,
+        )
+    count = responses.count()
+    days = []
+    for day in calendar.Calendar().itermonthdays(int(year), int(month)):
+        if day == 0:
+            continue
+        days.append(dict(
+                day=day,
+                count=responses.filter(visited__day=day).count(),
+                ))
+    return dict(responses=responses, days=days, month=month, year=year)
+
+
+@login_required
+@render_to('main/response_day_archive.html')
+def response_day_archive(request, year=2012, month=1, day=1):
+    responses = Response.objects.filter(
+        visited__year=year,
+        visited__month=month,
+        visited__day=day,
+        )
+    count = responses.count()
+    return dict(responses=responses, year=year, month=month, day=day)
 
 @login_required
 def response_raw(request, id):

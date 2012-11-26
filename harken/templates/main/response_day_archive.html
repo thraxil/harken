@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load markup %}
+
+{% block content %}
+<ul class="breadcrumb">
+<li><a href="/response/date/{{year}}/">{{year}}</a><span class="divider">/</span></li>
+<li><a href="/response/date/{{year}}/{{month}}/">{{month}}</a><span class="divider">/</span></li>
+<li class="active"><a href="/response/date/{{year}}/{{month}}/{{day}}/">{{day}}</a></li>
+</ul>
+
+
+Total: {{responses.count}}
+
+<table class="table table-condensed table-bordered table-striped">
+{% for response in responses %}
+<tr>
+	<td>
+		<a href="{{response.get_absolute_url}}">{{response.visited}}</a>
+	</td>
+	<td>{{response.length|filesizeformat}}</td>
+	<td>
+		{{response.url.url|truncatechars:100}}
+	</td>
+</tr>
+{% endfor %}
+</table>
+
+
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load markup %}
+
+{% block content %}
+<ul class="breadcrumb">
+<li class="active"><a href="/response/date/{{year}}/">{{year}}</a><span class="divider">/</span></li>
+</ul>
+
+
+Total: {{responses.count}}
+
+<ul>
+{% for month in months %}
+<li>{% if month.count %}
+<a href="{{month.month}}/">{{month.name}}: {{month.count}}</a>
+{% else %}
+{{month.name}}: {{month.count}}
+{% endif %}
+</li>
+{% endfor %}
+</ul>
+{% endblock %}
