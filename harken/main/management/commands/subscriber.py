@@ -27,10 +27,7 @@ class Command(BaseCommand):
             d = socket.recv()
             try:
                 message = loads(d)
-                if message['status'] == 200:
-                    print message['status'], message['content_type'], message['url']
-                else:
-                    print message['status'], message['url']
+                print message['content_type'], message['url']
                 r = POST(HARKEN_SERVER,params=message, async=False)
                 if r != "OK":
                     with open("/tmp/error.html", "w") as outfile:

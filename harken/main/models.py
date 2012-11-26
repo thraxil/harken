@@ -171,7 +171,6 @@ class Response(models.Model):
     def as_markdown(self):
         try:
             return nltk.clean_html(self.body())
-#            return html2text(self.body(), self.url.url)
         except Exception, e:
             return "[error converting HTML to Text: %s]" % str(e)
 
