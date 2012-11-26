@@ -37,5 +37,4 @@ class Command(BaseCommand):
                         outfile.write(r)
                         print "wrote out error"
             except ValueError:
-                print "json error: "
-                print str(d)
+                pass
