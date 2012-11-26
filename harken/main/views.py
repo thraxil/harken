@@ -55,7 +55,6 @@ def add(request):
         patch = url.get_patch(body)
         r = Response.objects.create(
             url=url,
-            status=int(request.POST.get('status', '200')),
             length=len(body),
             sha1hash=sha1hash(patch),
             )
