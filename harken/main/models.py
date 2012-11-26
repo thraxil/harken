@@ -145,10 +145,9 @@ class UrlTerm(models.Model):
 class Response(models.Model):
     url = models.ForeignKey(Url)
     status = models.IntegerField(default=200)
-    patch = models.TextField(blank=True, null=True, default="")
     length = models.IntegerField(default=0)
     visited = models.DateTimeField(auto_now_add=True)
-    sha1hash = models.CharField(max_length=64, blank=True, default="")
+    sha1hash = models.CharField(max_length=64)
 
     class Meta:
         ordering = ["-visited"]

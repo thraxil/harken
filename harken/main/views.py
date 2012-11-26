@@ -56,7 +56,6 @@ def add(request):
         r = Response.objects.create(
             url=url,
             status=int(request.POST.get('status', '200')),
-            patch=patch,
             length=len(body),
             sha1hash=sha1hash(patch),
             )
