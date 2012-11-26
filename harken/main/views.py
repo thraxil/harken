@@ -58,7 +58,9 @@ def add(request):
             status=int(request.POST.get('status', '200')),
             patch=patch,
             length=len(body),
+            sha1hash=sha1hash(patch),
             )
+        r.write_gzip(patch)
         add_to_solr(r, body)
         return HttpResponse("OK")
     return HttpResponse("POST only")

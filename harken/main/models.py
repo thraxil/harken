@@ -174,3 +174,27 @@ class Response(models.Model):
         dmp = diff_match_patch.diff_match_patch()
         return dmp.patch_apply(dmp.patch_fromText(self.patch),
                                self.url.get_content().decode('utf-8'))[0]
+
+    def path(self):
+        return os.path.join(
+            settings.MEDIA_ROOT,
+            path_from_hash(self.sha1hash),
+            "patch.gz"
+            )
+
+    def write_gzip(self, content):
+        p = self.path()
+        try:
+            os.makedirs(os.path.dirname(p))
+        except:
+            pass
+        f = gzip.open(p, 'wb')
+        f.write(content.encode('utf-8'))
+        f.close()
+
+    def read_gzip(self):
+        p = self.path()
+        f = gzip.open(p, 'rb')
+        file_content = f.read()
+        f.close()
+        return file_content
