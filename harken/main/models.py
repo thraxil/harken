@@ -95,7 +95,9 @@ class Url(models.Model):
         """ return a text patch of the supplied content against
         existing content """
         dmp = diff_match_patch.diff_match_patch()
-        return dmp.patch_toText(dmp.patch_make(self.get_content(), content.encode('utf-8')))
+        return dmp.patch_toText(
+            dmp.patch_make(self.get_content().encode('utf-8'),
+                           content.encode('utf-8')))
 
     def path(self):
         return os.path.join(
