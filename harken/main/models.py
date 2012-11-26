@@ -79,6 +79,28 @@ def terms(content):
     return [normalize_term(t) for t in all_terms][:20]
 
 
+class GZipper(object):
+    def __init__(self, obj):
+        self.obj = obj
+
+    def write_gzip(self, content):
+        p = self.obj.path()
+        try:
+            os.makedirs(os.path.dirname(p))
+        except:
+            pass
+        f = gzip.open(p, 'wb')
+        f.write(content.encode('utf-8'))
+        f.close()
+
+    def read_gzip(self):
+        p = self.obj.path()
+        f = gzip.open(p, 'rb')
+        file_content = f.read()
+        f.close()
+        return file_content
+
+
 class Url(models.Model):
     url = models.URLField(db_index=True)
     content_type = models.CharField(max_length=256, blank=True, default="")
@@ -110,21 +132,10 @@ class Url(models.Model):
             )
 
     def write_gzip(self, content):
-        p = self.path()
-        try:
-            os.makedirs(os.path.dirname(p))
-        except:
-            pass
-        f = gzip.open(p, 'wb')
-        f.write(content.encode('utf-8'))
-        f.close()
+        GZipper(self).write_gzip(content)
 
     def read_gzip(self):
-        p = self.path()
-        f = gzip.open(p, 'rb')
-        file_content = f.read()
-        f.close()
-        return file_content
+        return GZipper(self).read_gzip()
 
 
 class Term(models.Model):
@@ -186,18 +197,7 @@ class Response(models.Model):
             )
 
     def write_gzip(self, content):
-        p = self.path()
-        try:
-            os.makedirs(os.path.dirname(p))
-        except:
-            pass
-        f = gzip.open(p, 'wb')
-        f.write(content.encode('utf-8'))
-        f.close()
+        GZipper(self).write_gzip(content)
 
     def read_gzip(self):
-        p = self.path()
-        f = gzip.open(p, 'rb')
-        file_content = f.read()
-        f.close()
-        return file_content
+        return GZipper(self).read_gzip()
