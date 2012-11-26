@@ -148,6 +148,7 @@ class Response(models.Model):
     patch = models.TextField(blank=True, null=True, default="")
     length = models.IntegerField(default=0)
     visited = models.DateTimeField(auto_now_add=True)
+    sha1hash = models.CharField(max_length=64, blank=True, default="")
 
     class Meta:
         ordering = ["-visited"]
