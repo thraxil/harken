@@ -1,11 +1,6 @@
-import sys
 import zmq
 from json import loads
 from django.core.management.base import BaseCommand
-from django.conf import settings
-import os
-import os.path
-from datetime import datetime, timedelta
 from restclient import POST
 
 PUB_SOCKET = "tcp://localhost:6666"
@@ -28,7 +23,7 @@ class Command(BaseCommand):
             try:
                 message = loads(d)
                 print message['content_type'], message['url']
-                r = POST(HARKEN_SERVER,params=message, async=False)
+                r = POST(HARKEN_SERVER, params=message, async=False)
                 if r != "OK":
                     with open("/tmp/error.html", "w") as outfile:
                         outfile.write(r)

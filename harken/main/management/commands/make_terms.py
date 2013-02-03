@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from harken.main.models import Url, Term, UrlTerm
 
+
 class Command(BaseCommand):
     args = ''
     help = ''
