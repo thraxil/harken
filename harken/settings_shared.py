@@ -90,6 +90,7 @@ INSTALLED_APPS = (
     'bootstrapform',
     'lettuce.django',
     'harken.main',
+    'smoketest',
 )
 
 LETTUCE_APPS = (
