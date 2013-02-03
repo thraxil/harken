@@ -20,6 +20,22 @@ DATABASES = {
         }
 }
 
+if 'test' in sys.argv:
+     DATABASES = {
+          'default': {
+               'ENGINE': 'django.db.backends.sqlite3',
+               'NAME': ':memory:',
+               'HOST': '',
+               'PORT': '',
+               'USER': '',
+               'PASSWORD': '',}}
+
+NOSE_ARGS = [
+    '--with-coverage',
+    '--cover-package=harken',
+]
+
+
 USE_TZ = True
 TIME_ZONE = 'America/New_York'
 LANGUAGE_CODE = 'en-us'
@@ -97,8 +113,6 @@ SENTRY_REMOTE_URL = 'http://sentry.ccnmtl.columbia.edu/sentry/store/'
 SENTRY_SITE = 'harken'
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-if 'test' in sys.argv:
-     DATABASE_ENGINE = 'sqlite3'
 SOUTH_TESTS_MIGRATE = False
 
 THUMBNAIL_SUBDIR = "thumbs"

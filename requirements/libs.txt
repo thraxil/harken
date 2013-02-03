@@ -21,3 +21,4 @@ requirements/src/PyYAML-3.10.tar.gz
 requirements/src/nltk-2.0.4.tar.gz
 requirements/src/zope.interface-4.0.2.tar.gz
 requirements/src/topia.termextract-1.1.0.tar.gz
+requirements/src/coverage-3.5.3.tar.gz
