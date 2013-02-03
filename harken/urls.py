@@ -54,6 +54,8 @@ urlpatterns = patterns('',
                        (r'^term/(?P<id>\d+)/delete/$',
                         'harken.main.views.delete_term'),
 
+                       (r'^smoketest/', include('smoketest.urls')),
+
                        (r'^admin/', include(admin.site.urls)),
                        (r'^munin/',include('munin.urls')),
 											 (r'^stats/', direct_to_template, {'template': 'stats.html'}),
