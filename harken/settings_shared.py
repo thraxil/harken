@@ -143,3 +143,5 @@ WIND_SUPERUSER_MAPPER_GROUPS = ['anp8', ]
 
 SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 SESSION_COOKIE_HTTPONLY = True
+
+SOLR_BASE = "http://tardar.thraxil.org:8080/solr/"

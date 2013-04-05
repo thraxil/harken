@@ -2,6 +2,7 @@ from annoying.decorators import render_to
 from harken.main.models import Response, add_to_solr, Url, Domain
 from harken.main.models import Term, UrlTerm, sha1hash
 from harken.main.models import terms
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponse, HttpResponseRedirect
@@ -134,7 +135,7 @@ def response_patch(request, id):
 def delete_response(request, id):
     if request.method == "POST":
         r = Response.objects.get(id=id)
-        conn = Solr('http://worker.thraxil.org:8080/solr/')
+        conn = Solr(settings.SOLR_BASE)
         conn.delete("result:%d" % r.id)
         r.delete()
     return HttpResponseRedirect("/")
@@ -145,7 +146,7 @@ def delete_url(request, id):
     if request.method == "POST":
         u = Url.objects.get(id=id)
         for r in u.response_set.all():
-            conn = Solr('http://worker.thraxil.org:8080/solr/')
+            conn = Solr(settings.SOLR_BASE)
             conn.delete("result:%d" % r.id)
             r.delete()
         u.delete()
@@ -158,7 +159,7 @@ def delete_domain(request, id):
     if request.method == "POST":
         for u in d.url_set.all():
             for r in u.response_set.all():
-                conn = Solr('http://worker.thraxil.org:8080/solr/')
+                conn = Solr(settings.SOLR_BASE)
                 conn.delete("result:%d" % r.id)
                 r.delete()
             u.delete()
@@ -199,7 +200,7 @@ def search(request):
     query = request.GET.get('q', '')
     if not query:
         return dict(query=query)
-    conn = Solr('http://worker.thraxil.org:8080/solr/')
+    conn = Solr(settings.SOLR_BASE)
     results = [res for res in [extract_response(r) for r in conn.search(query)]
                if res is not None]
     return dict(query=query, responses=results)

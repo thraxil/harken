@@ -1,5 +1,6 @@
 from django.db import models
 from pysolr import Solr
+from django.conf import settings
 import diff_match_patch
 import nltk
 import re
@@ -22,7 +23,7 @@ def path_from_hash(sha1):
 
 
 def add_to_solr(response, body):
-    conn = Solr('http://worker.thraxil.org:8080/solr/')
+    conn = Solr(settings.SOLR_BASE)
     conn.add([
             dict(
                 id="response:%d" % response.id,
