@@ -106,7 +106,7 @@ class GZipper(object):
         k.key = self.obj.s3_key()
         sio = StringIO()
         gzf = GzipFile(fileobj=sio, mode='wb')
-        gzf.write(content)
+        gzf.write(content.encode('utf-8'))
         gzf.close()
         k.set_contents_from_file(sio.getvalue())
 
