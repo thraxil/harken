@@ -8,8 +8,11 @@ from topia.termextract import extract
 import hashlib
 import os.path
 import os
-from django.conf import settings
 import gzip
+import boto
+from boto.s3.key import Key
+from cStringIO import StringIO
+from gzip import GzipFile
 
 
 def path_from_hash(sha1):
@@ -94,6 +97,19 @@ class GZipper(object):
         f.write(content.encode('utf-8'))
         f.close()
 
+        # upload to S3 as well
+        conn = boto.connect_s3(
+            settings.AWS_ACCESS_KEY,
+            settings.AWS_SECRET_KEY)
+        bucket = conn.get_bucket(self.obj.s3_bucket_name())
+        k = Key(bucket)
+        k.key = self.obj.s3_key()
+        sio = StringIO()
+        gzf = GzipFile(fileobj=sio, mode='wb')
+        gzf.write(content)
+        gzf.close()
+        k.set_contents_from_file(sio.getvalue())
+
     def read_gzip(self):
         p = self.obj.path()
         f = gzip.open(p, 'rb')
@@ -137,6 +153,12 @@ class Url(models.Model):
 
     def read_gzip(self):
         return GZipper(self).read_gzip()
+
+    def s3_bucket_name(self):
+        return "thraxil-harken-urls"
+
+    def s3_key(self):
+        return "%s/content.gz" % self.sha1hash
 
 
 class Term(models.Model):
@@ -200,3 +222,9 @@ class Response(models.Model):
 
     def read_gzip(self):
         return GZipper(self).read_gzip()
+
+    def s3_bucket_name(self):
+        return "thraxil-harken-responses"
+
+    def s3_key(self):
+        return "%s/patch.gz" % self.sha1hash

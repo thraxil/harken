@@ -26,3 +26,4 @@ requirements/src/pep8-1.4.tar.gz
 requirements/src/pyflakes-0.5.0.tar.gz
 requirements/src/flake8-1.7.0.tar.gz
 requirements/src/six-1.2.0.tar.gz
+requirements/src/boto-2.9.2.tar.gz
