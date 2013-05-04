@@ -108,7 +108,8 @@ class GZipper(object):
         gzf = GzipFile(fileobj=sio, mode='wb')
         gzf.write(content.encode('utf-8'))
         gzf.close()
-        k.set_contents_from_file(sio.getvalue())
+        sio.seek(0)
+        k.set_contents_from_file(sio)
 
     def read_gzip(self):
         p = self.obj.path()
