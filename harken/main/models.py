@@ -8,7 +8,6 @@ from topia.termextract import extract
 import hashlib
 import os.path
 import os
-import gzip
 import boto
 from boto.s3.key import Key
 from cStringIO import StringIO
@@ -88,16 +87,6 @@ class GZipper(object):
         self.obj = obj
 
     def write_gzip(self, content):
-        p = self.obj.path()
-        try:
-            os.makedirs(os.path.dirname(p))
-        except:
-            pass
-        f = gzip.open(p, 'wb')
-        f.write(content.encode('utf-8'))
-        f.close()
-
-        # upload to S3 as well
         conn = boto.connect_s3(
             settings.AWS_ACCESS_KEY,
             settings.AWS_SECRET_KEY)
@@ -112,11 +101,17 @@ class GZipper(object):
         k.set_contents_from_file(sio)
 
     def read_gzip(self):
-        p = self.obj.path()
-        f = gzip.open(p, 'rb')
-        file_content = f.read()
-        f.close()
-        return file_content
+        conn = boto.connect_s3(
+            settings.AWS_ACCESS_KEY,
+            settings.AWS_SECRET_KEY)
+        bucket = conn.get_bucket(self.obj.s3_bucket_name())
+        k = Key(bucket)
+        k.key = self.obj.s3_key()
+        sio = StringIO()
+        k.get_contents_to_file(sio)
+        sio.seek(0)
+        gzf = GzipFile(fileobj=sio, mode="rb")
+        return gzf.read()
 
 
 class Url(models.Model):
