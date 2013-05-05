@@ -91,6 +91,7 @@ INSTALLED_APPS = (
     'lettuce.django',
     'harken.main',
     'smoketest',
+    'djcelery',
 )
 
 LETTUCE_APPS = (
@@ -145,3 +146,8 @@ SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 SESSION_COOKIE_HTTPONLY = True
 
 SOLR_BASE = "http://tardar.thraxil.org:8080/solr/"
+
+BROKER_URL = "amqp://guest:guest@localhost:5672//harken"
+CELERYD_CONCURRENCY = 4
+import djcelery
+djcelery.setup_loader()

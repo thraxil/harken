@@ -13,3 +13,5 @@ requirements/src/django_compressor-1.2.tar.gz
 requirements/src/django-statsd-mozilla-0.3.3.tar.gz
 requirements/src/django-bootstrap-form-2.0.3.tar.gz
 requirements/src/django-smoketest-0.1.1.tar.gz
+requirements/src/django-picklefield-0.3.0.tar.gz
+requirements/src/django-celery-3.0.11.tar.gz

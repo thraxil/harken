@@ -1,13 +1,12 @@
 from annoying.decorators import render_to
-from harken.main.models import Response, add_to_solr, Url, Domain
-from harken.main.models import Term, UrlTerm, sha1hash
-from harken.main.models import terms
+from harken.main.models import Response, Url, Domain
+from harken.main.models import Term
+from harken.main.tasks import add_response
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponse, HttpResponseRedirect
 from pysolr import Solr
-from urlparse import urlparse
 import calendar
 
 
@@ -28,40 +27,11 @@ def index(request, page=1):
 
 def add(request):
     if request.method == "POST":
-        body = request.POST.get('body', '')
-        if len(body) < 1024:
-            # ignore small ones
-            return HttpResponse("OK")
-        q = Url.objects.filter(url=request.POST['url'][:200])
-        url = None
-        if q.count() == 0:
-            netloc = urlparse(request.POST['url'][:200]).netloc.lower()
-            d = None
-            q2 = Domain.objects.filter(domain=netloc)
-            if q2.count() == 0:
-                d = Domain.objects.create(domain=netloc)
-            else:
-                d = q2[0]
-            url = Url.objects.create(
-                url=request.POST['url'][:200],
-                content_type=request.POST.get('content_type', ''),
-                domain=d,
-                sha1hash=sha1hash(body)
-                )
-            url.write_gzip(body)
-            for t in terms(body):
-                term, _ = Term.objects.get_or_create(term=t[:200])
-                urlterm, _ = UrlTerm.objects.get_or_create(term=term, url=url)
-        else:
-            url = q[0]
-        patch = url.get_patch(body)
-        r = Response.objects.create(
-            url=url,
-            length=len(body),
-            sha1hash=sha1hash(patch),
-            )
-        r.write_gzip(patch)
-        add_to_solr(r, body)
+        add_response.delay(
+            url=request.POST.get('url', ''),
+            body=request.POST.get('body', ''),
+            content_type=request.POST.get('content_type', ''),
+        )
         return HttpResponse("OK")
     return HttpResponse("POST only")
 
