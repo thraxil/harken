@@ -92,6 +92,7 @@ INSTALLED_APPS = (
     'harken.main',
     'smoketest',
     'djcelery',
+    'gunicorn',
 )
 
 LETTUCE_APPS = (
