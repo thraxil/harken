@@ -1,8 +1,7 @@
 language: python
 python:
-  - "2.6"
   - "2.7"
 install:
-  - ./bootstrap.py
+  - pip install -r requirements.txt --use-mirrors
 script:
-  - ./manage.py test
+  - python manage.py test
