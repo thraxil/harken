@@ -8,6 +8,7 @@ env.roledefs = {
     'web': ['maru.thraxil.org', 'oolong.thraxil.org'],
 }
 
+code_dir = "/var/www/harken/harken"
 
 @roles('web')
 def restart_gunicorn():
@@ -26,7 +27,6 @@ def migrate():
         run("./manage.py migrate")
 
 def deploy():
-    code_dir = "/var/www/harken/harken"
     with cd(code_dir):
         run("git pull origin master")
         run("./bootstrap.py")
