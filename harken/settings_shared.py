@@ -17,7 +17,7 @@ DATABASES = {
         'PORT': 5432,
         'USER': '',
         'PASSWORD': '',
-        }
+    }
 }
 
 if 'test' in sys.argv:
@@ -51,10 +51,10 @@ TEMPLATE_LOADERS = (
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
-     'django.contrib.auth.context_processors.auth',
-     'django.core.context_processors.debug',
-     'django.core.context_processors.request',
-    )
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.request',
+)
 
 MIDDLEWARE_CLASSES = (
     'django_statsd.middleware.GraphiteRequestTimingMiddleware',
@@ -131,15 +131,15 @@ COMPRESS_ROOT = "media/"
 # WIND settings
 
 AUTHENTICATION_BACKENDS = (
-     'djangowind.auth.WindAuthBackend',
-     'django.contrib.auth.backends.ModelBackend',)
+    'djangowind.auth.WindAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',)
 WIND_BASE = "https://wind.columbia.edu/"
 WIND_SERVICE = "cnmtl_full_np"
 WIND_PROFILE_HANDLERS = ['djangowind.auth.CDAPProfileHandler']
 WIND_AFFIL_HANDLERS = [
-     'djangowind.auth.AffilGroupMapper',
-     'djangowind.auth.StaffMapper',
-     'djangowind.auth.SuperuserMapper']
+    'djangowind.auth.AffilGroupMapper',
+    'djangowind.auth.StaffMapper',
+    'djangowind.auth.SuperuserMapper']
 WIND_STAFF_MAPPER_GROUPS = ['tlc.cunix.local:columbia.edu']
 WIND_SUPERUSER_MAPPER_GROUPS = ['anp8', ]
 

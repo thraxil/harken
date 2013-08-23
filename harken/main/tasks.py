@@ -26,7 +26,7 @@ def add_response(url, body, content_type):
             content_type=content_type,
             domain=d,
             sha1hash=sha1hash(body)
-            )
+        )
         u.write_gzip(body)
         for t in terms(body):
             term, _ = Term.objects.get_or_create(term=t[:200])
@@ -38,6 +38,6 @@ def add_response(url, body, content_type):
         url=u,
         length=len(body),
         sha1hash=sha1hash(patch),
-        )
+    )
     r.write_gzip(patch)
     add_to_solr(r, body)

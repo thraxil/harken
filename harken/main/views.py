@@ -66,15 +66,16 @@ def response_month_archive(request, year=2012, month=1):
     responses = Response.objects.filter(
         visited__year=year,
         visited__month=month,
-        )
+    )
     days = []
     for day in calendar.Calendar().itermonthdays(int(year), int(month)):
         if day == 0:
             continue
-        days.append(dict(
+        days.append(
+            dict(
                 day=day,
                 count=responses.filter(visited__day=day).count(),
-                ))
+            ))
     return dict(responses=responses, days=days, month=month, year=year)
 
 
@@ -85,7 +86,7 @@ def response_day_archive(request, year=2012, month=1, day=1):
         visited__year=year,
         visited__month=month,
         visited__day=day,
-        )
+    )
     return dict(responses=responses, year=year, month=month, day=day)
 
 

@@ -26,13 +26,14 @@ def path_from_hash(sha1):
 
 def add_to_solr(response, body):
     conn = Solr(settings.SOLR_BASE)
-    conn.add([
+    conn.add(
+        [
             dict(
                 id="response:%d" % response.id,
                 name=response.url.url,
                 text=body.encode('utf-8'),
-                )
-            ])
+            )
+        ])
 
 
 class Domain(models.Model):
@@ -53,7 +54,7 @@ def allow_term(t):
         '/', '"', ')', ';', '\\', '|', '$',
         '+', '(', '[', ']', '{', '}', '@',
         '&', '%', '=', '*', '#',
-        ]
+    ]
     for c in disallowed:
         if c in t:
             return False
@@ -134,15 +135,15 @@ class Url(models.Model):
             dmp.patch_make(
                 self.get_content().decode('utf-8'),
                 content.encode('ascii', 'xmlcharrefreplace'),
-                )
             )
+        )
 
     def path(self):
         return os.path.join(
             settings.MEDIA_ROOT,
             path_from_hash(self.sha1hash),
             "content.gz"
-            )
+        )
 
     def write_gzip(self, content):
         GZipper(self).write_gzip(content)
@@ -211,7 +212,7 @@ class Response(models.Model):
             settings.MEDIA_ROOT,
             path_from_hash(self.sha1hash),
             "patch.gz"
-            )
+        )
 
     def write_gzip(self, content):
         GZipper(self).write_gzip(content)
