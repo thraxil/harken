@@ -152,3 +152,10 @@ BROKER_URL = "amqp://guest:guest@localhost:5672//harken"
 CELERYD_CONCURRENCY = 4
 import djcelery
 djcelery.setup_loader()
+
+ALLOWED_HOSTS = ['localhost', '.thraxil.org']
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+}
+
